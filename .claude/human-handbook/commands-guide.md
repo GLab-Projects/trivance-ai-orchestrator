@@ -241,27 +241,58 @@
 
 ---
 
+## 🌳 Comandos Worktree
+
+### `/worktree:create` - Crear worktree aislado
+```bash
+/worktree:create <purpose> <parent-branch>
+```
+**Qué hace**: Crea worktree en directorio sibling con rama nueva y upstream remoto.
+**Cuándo usarlo**: SIEMPRE para desarrollo (features, bugs, refactoring).
+**Flujo**: Valida argumentos → Verifica parent branch → Crea worktree → Configura upstream → Guía para cambio de directorio
+
+### `/worktree:cleanup` - Limpiar worktrees
+```bash
+/worktree:cleanup <worktree1> [worktree2] [...]
+```
+**Qué hace**: Elimina worktrees específicos con validación de ownership y estado limpio.
+**Cuándo usarlo**: Después de mergear PRs o cuando worktrees ya no se necesiten.
+**Flujo**: Valida ownership → Verifica estado limpio → Confirmación → Triple cleanup (worktree/local/remote)
+
+**Estándar del equipo:**
+- Todo desarrollo se hace en worktrees aislados
+- Mantiene workspace principal siempre limpio  
+- Permite sesiones Claude Code paralelas
+- Rollback instantáneo sin conflictos
+
+---
+
 ## 🎯 Flujos Típicos
 
 ### Desarrollo de Feature Nueva
 ```bash
-1. /workflow:session-start        # Documentar objetivos
-2. /understand                    # Entender contexto
-3. /implement "nueva feature"     # Implementar
-4. /test                         # Validar funcionamiento  
-5. /review                       # Revisar calidad
-6. /security-scan                # Verificar seguridad
-7-10. Seguir workflow AI-First    # Ver: ai-first-workflow.md
+1. /worktree:create feature-name develop  # Crear worktree aislado
+2. cd ../worktree-feature-name            # Cambiar al worktree
+3. claude /workflow:session-start         # Nueva sesión en worktree
+4. /understand                            # Entender contexto
+5. /implement "nueva feature"             # Implementar
+6. /test                                 # Validar funcionamiento  
+7. /review                               # Revisar calidad
+8. /security-scan                        # Verificar seguridad
+9-12. Seguir workflow AI-First           # Ver: ai-first-workflow.md
 ```
 
 > 📚 **Para workflow completo de PR + findings + issues:** Ver `ai-first-workflow.md`
 
 ### Bug Fix Urgente
 ```bash
-1. /understand                   # Entender el problema
-2. Arreglar el código
-3. /test                        # Validar fix
-4. /commit "fix: descripción"   # Commit inmediato
+1. /worktree:create fix-bug-name main     # Worktree desde main
+2. cd ../worktree-fix-bug-name            # Cambiar al worktree
+3. claude /workflow:session-start         # Nueva sesión en worktree
+4. /understand                            # Entender el problema
+5. Arreglar el código
+6. /test                                 # Validar fix
+7. /commit "fix: descripción"            # Commit inmediato
 ```
 
 ### Limpieza de Código

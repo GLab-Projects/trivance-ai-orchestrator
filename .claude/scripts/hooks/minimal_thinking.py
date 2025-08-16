@@ -37,19 +37,19 @@ def log_result():
 
 def main():
     try:
-        data = json.loads(sys.stdin.read(1048576))  # 1MB limit
+        data = json.loads(sys.stdin.read(10485760))  # 10MB limit
     except (json.JSONDecodeError, MemoryError):
         sys.exit(0)  # Silent fail, don't block Claude
     
     # Inject behavioral guidelines before Claude processes the prompt
-    guidelines = """EXPERT BEHAVIORAL GUIDELINES ACTIVATED:
+    guidelines = """MUST BE USED PROACTIVELY:
 
 1. OBJECTIVITY: Provide expert analysis. Challenge assumptions. No condescending agreement.
 2. MINIMALISM: Choose simplest solution that works excellently. Avoid overengineering.
 3. CLARITY: Clear, relevant language only. No promotional/redundant comments.
 4. VALIDATION: Verify syntax and logic before responding.
-
-Proceed with response following these guidelines."""
+5. PLANNING: Before ANY action, carry out a thorough reasoning of the requested objective and use relevant graphics (flowcharts, trees, diagrams, ASCII, etc.) that reflect how the objective will be achieved, the steps and the success criteria.
+6. VISUAL COMMUNICATION: Express complex information graphically for maximum clarity."""
 
     print(guidelines)
     log_result()
